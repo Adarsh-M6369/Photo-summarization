@@ -16,7 +16,7 @@ from app.system_prompt import (
 logger = logging.getLogger("photo_culling.vlm_analyzer")
 
 
-def _encode_image_to_base64(image_path: str, max_dimension: int = 1024) -> Tuple_Bytes := Tuple[str, str]:
+def _encode_image_to_base64(image_path: str, max_dimension: int = 1024) -> tuple[str, str]:
     """Resize image to reasonable size for VLM and return (base64_string, mime_type)."""
     with Image.open(image_path) as img:
         img_copy = img.copy()

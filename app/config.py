@@ -1,41 +1,42 @@
+from dotenv import load_dotenv
 import os
 from pathlib import Path
-from pydantic_settings import BaseSettings, SettingsConfigDict
+
+load_dotenv()
 
 
-class Settings(BaseSettings):
-    APP_NAME: str = "AI Photo Studio Culling & HITL Management Engine"
-    DEBUG: bool = True
-    HOST: str = "0.0.0.0"
-    PORT: int = 8000
-    WORKERS: int = 1
+class Settings:
+    APP_NAME = os.getenv("APP_NAME", "AI Photo Studio Culling & HITL Management Engine")
+    DEBUG = os.getenv("DEBUG", "true").lower() in ("true", "1", "yes")
+    HOST = os.getenv("HOST", "127.0.0.1")
+    PORT = int(os.getenv("PORT", "8000"))
+    WORKERS = int(os.getenv("WORKERS", "1"))
 
-    # Database
-    MONGO_URI: str = "mongodb://localhost:27017"
-    MONGO_DB_NAME: str = "photo_culling_studio"
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+    GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+    MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY")
+    MONGO_URL = os.getenv("MONGO_URL")
+    MONGO_URL_local = os.getenv("MONGO_URL_local")
+    MONGO_URI = os.getenv("MONGO_URL") or os.getenv("MONGO_URL_local") or os.getenv("MONGO_URI", "mongodb://localhost:27017")
+    DB_NAME = os.getenv("DB_NAME", "rag_db")
+    MONGO_DB_NAME = os.getenv("DB_NAME", "rag_db")
+    NEWS_API_KEY = os.getenv("NEWS_API_KEY")
+    CLERK_PUBLISHABLE_KEY = os.getenv("CLERK_PUBLISHABLE_KEY")
+    CLERK_SECRET_KEY = os.getenv("CLERK_SECRET_KEY")
+    CLERK_PEM_PUBLIC_KEY = os.getenv("CLERK_PEM_PUBLIC_KEY")
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+    ACCESS_TOKEN_EXPIRE_MINUTES = 15
+    REFRESH_TOKEN_EXPIRE_DAYS = 7
+    FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
-    # Vision Language Models
-    GEMINI_API_KEY: str = ""
-    MISTRAL_API_KEY: str = ""
-
-    # Authentication
-    CLERK_SECRET_KEY: str = ""
-    CLERK_PEM_PUBLIC_KEY: str = ""
-
-    # Storage Paths
-    BASE_STORAGE_PATH: str = "./storage"
+    # Storage paths
+    BASE_STORAGE_PATH = os.getenv("BASE_STORAGE_PATH", "./storage")
 
     # Thresholds for CV Filtering & Culling
-    LAPLACIAN_BLUR_THRESHOLD: float = 120.0
-    PHASH_HAMMING_THRESHOLD: int = 4
-    VLM_MIN_AESTHETIC_SCORE: float = 6.0
-    HITL_BATCH_SIZE: int = 50
-
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_file_encoding="utf-8",
-        extra="ignore",
-    )
+    LAPLACIAN_BLUR_THRESHOLD = float(os.getenv("LAPLACIAN_BLUR_THRESHOLD", "120.0"))
+    PHASH_HAMMING_THRESHOLD = int(os.getenv("PHASH_HAMMING_THRESHOLD", "4"))
+    VLM_MIN_AESTHETIC_SCORE = float(os.getenv("VLM_MIN_AESTHETIC_SCORE", "6.0"))
+    HITL_BATCH_SIZE = int(os.getenv("HITL_BATCH_SIZE", "50"))
 
     @property
     def storage_dir(self) -> Path:
